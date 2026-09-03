@@ -2,7 +2,11 @@ async function findTeacher() {
     const input = document.getElementById("nameInput");
     const invitation = document.getElementById("invitation");
 
-    const enteredName = input.value.trim().toLowerCase();
+    const enteredName = input.value
+        .trim()
+        .toLowerCase()
+        .replace(/[.,]/g, "")
+        .replace(/\s+/g, " ");
 
     if (enteredName === "") {
         invitation.innerHTML =
@@ -14,9 +18,14 @@ async function findTeacher() {
         const response = await fetch("database.json");
         const teachers = await response.json();
 
-        const teacher = teachers.find(person =>
-            person.searchName === enteredName
-        );
+        const teacher = teachers.find(person => {
+            const storedName = person.searchName
+                .toLowerCase()
+                .replace(/[.,]/g, "")
+                .replace(/\s+/g, " ");
+
+            return storedName.includes(enteredName);
+        });
 
         if (teacher) {
             invitation.innerHTML = `
